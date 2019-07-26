@@ -204,14 +204,13 @@ case "$1" in
           docker run -d $image
         fi
 
-        cid=$(docker inspect --format='{{.Id}}' $(docker ps -l -q)) && \
-        cid=${cid:0:12} && \
-        dirname=$(docker inspect --format='{{.Name}}' $(docker ps -l -q)) && \
-        dirname=${dirname#*/} && \
-        cname=$dirname && \
-        docker cp $(docker ps -l -q):${DOCROOT} ~/data/${dirname} && \
-        docker rm -f $(docker ps -l -q) && \
-        docker run -d --name $cname -p 80:80 -p 3306:3306 -p 8025:8025 -v ~/data/${dirname}:${DOCROOT}:rw -v ${SSH_AUTH_SOCK}:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent $image
+        cid=$(docker inspect --format='{{.Id}}' $(docker ps -l -q))
+        cid=${cid:0:12}
+        dirname=$(docker inspect --format='{{.Name}}' $(docker ps -l -q))
+        cname=${dirname#*/}
+        docker cp $(docker ps -l -q):${DOCROOT} ~/data/${cname}
+        docker rm -f $(docker ps -l -q)
+        docker run -d --name $cname -p 80:80 -p 3306:3306 -p 8025:8025 -v ~/data/${cname}:${DOCROOT}:rw -v ${SSH_AUTH_SOCK}:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent $image
       fi
 
     fi
