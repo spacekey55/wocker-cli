@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-WOCKER_VERSION='1.4'
+WOCKER_VERSION='1.5 nightly'
 WORDPRESS_VERSION='5.2'
 RED=31
 USER=wocker
@@ -368,11 +368,10 @@ EOF
       if [[ "$2" = '--nightly' ]]; then
         branch='nightly'
       fi
-      docker pull wocker/wocker:latest && \
-      sudo wget -q -O /opt/bin/wocker https://raw.githubusercontent.com/wckr/wocker-cli/${branch}/wocker && \
-      sudo chmod +x /opt/bin/wocker && \
-      sleep 1 && \
-      wocker version
+      docker pull wocker/wocker:latest
+      sudo wget -q -O /opt/bin/wocker https://raw.githubusercontent.com/wckr/wocker-cli/${branch}/wocker
+      sudo chmod +x /opt/bin/wocker
+      # wocker version
     fi
     ;;
 
@@ -435,10 +434,10 @@ EOF
       if [[ $(docker ps -q) ]]; then
         cid=$(docker ps -q)
         if [[ ! $cid =~ $'\n' ]]; then
-          docker exec -u $USER $cid curl -OL $theme_test_data_url \
-          && docker exec -u $USER $cid wp plugin install wordpress-importer --activate \
-          && docker exec -u $USER $cid wp import ${theme_test_data_url##*/} --authors=create \
-          && docker exec -u $USER $cid rm ${theme_test_data_url##*/}
+          docker exec -u $USER $cid curl -OL $theme_test_data_url
+          docker exec -u $USER $cid wp plugin install wordpress-importer --activate
+          docker exec -u $USER $cid wp import ${theme_test_data_url##*/} --authors=create
+          docker exec -u $USER $cid rm ${theme_test_data_url##*/}
         fi
       fi
 
